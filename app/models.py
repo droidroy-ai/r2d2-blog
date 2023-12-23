@@ -21,6 +21,10 @@ class User(db.Model, UserMixin):
         foreign_keys='PostLike.user_id',
         backref='user', lazy='dynamic')
 
+    commented = db.relationship('Comment', backref='user',
+                               foreign_keys='Comment.user_id',
+                               lazy='dynamic')
+
     def like_post(self, post):
         if not self.has_liked_post(post):
             like = PostLike(user_id=self.id, post_id=post.id)
@@ -47,8 +51,9 @@ class Post(db.Model):
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    likes = db.relationship('PostLike', backref='post', lazy='dynamic')
 
+    likes = db.relationship('PostLike', backref='post', lazy='dynamic')
+    comments = db.relationship('Comment', backref='post', lazy='dynamic')
     def __repr__(self) -> str:
         return f"Post('{self.title}', '{self.date_posted}')"
 
@@ -57,4 +62,13 @@ class PostLike(db.Model):
     __tablename__ = 'post_like'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))    
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.String(500), nullable=False)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
