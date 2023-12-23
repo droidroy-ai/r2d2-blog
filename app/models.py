@@ -54,6 +54,10 @@ class Post(db.Model):
 
     likes = db.relationship('PostLike', backref='post', lazy='dynamic')
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
+
+    def total_comments(self):
+        return self.comments.count()
+
     def __repr__(self) -> str:
         return f"Post('{self.title}', '{self.date_posted}')"
 

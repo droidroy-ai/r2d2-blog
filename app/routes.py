@@ -4,8 +4,8 @@ from flask_login import login_user, logout_user, current_user, login_required
 import secrets
 import os
 from app import app, bcrypt, db
-from app.models import User, Post
-from app.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
+from app.models import User, Post, Comment
+from app.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm, CommentForm
 
 
 @app.route("/")
@@ -99,10 +99,21 @@ def create_post():
     return render_template('create_post.html', title='New Post', form=form,
                            legend='Create Post')
 
-@app.route('/post/<int:post_id>')
+@app.route('/post/<int:post_id>', methods=['GET', 'POST'])
 def post(post_id):
     post = Post.query.get_or_404(post_id)
-    return render_template('post_detail.html', tile=post.title, post=post)
+    form = CommentForm()
+    if form.validate_on_submit():
+        if current_user.is_authenticated:
+            comment = Comment(body=form.body.data, post_id=post.id, user_id=current_user.id)
+            db.session.add(comment)
+            db.session.commit()
+            flash("Your comment has been added to the post", "success")
+            return redirect(url_for("post", post_id=post.id))
+        else:
+            flash("Please login to comment")
+            return redirect(url_for("login"))
+    return render_template('post_detail.html', tile=post.title, post=post, form=form)
 
 @app.route('/post/<int:post_id>/update', methods=['GET', 'POST'])
 @login_required

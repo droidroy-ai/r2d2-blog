@@ -13,11 +13,44 @@
             <h2>{{ post.title }}</h2>
             <p>{{ post.content }}</p>
         </div>
-        {% if current_user.has_liked_post(post) %}
-        <a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}">Unlike</a>
-        {% else %}
-        <a href="{{ url_for('like_action', post_id=post.id, action='like') }}">Like</a>
+        {% if current_user.is_authenticated %}
+            {% if current_user.has_liked_post(post) %}
+            <a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}">Unlike</a>
+            {% else %}
+            <a href="{{ url_for('like_action', post_id=post.id, action='like') }}">Like</a>
+            {% endif %}
         {% endif %}
         <small>{{ post.likes.count() }} Likes</small>
+        <small class="ml-2">{{ post.total_comments() }} Comments</small>
     </article>
+    <div class="content-section">
+        {% for comment in post.comments %}
+        <p class="text-secondary">{{ comment.user.username }} commented:</p>
+        <p>{{ comment.body }}</p>
+        {% endfor %}
+    </div>
+    <form action="" method="POST">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">{{ legend }}</legend>
+            <div class="form-group">
+                {{ form.body.label(class="form-control-label") }}
+                {% if form.body.errors %}
+                    {{ form.body(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.body.errors %}
+                            <span>
+                                {{ error }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.body(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group mt-2">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
 {% endblock content %}
