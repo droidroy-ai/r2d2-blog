@@ -35,6 +35,9 @@
                 </ul>
                 <ul class="navbar-nav d-flex">
                     {% if current_user.is_authenticated %}
+                    <li class="nav-item ml-2">
+                        <a href="{{ url_for('create_post') }}" class="nav-item nav-link">New Post</a>
+                    </li>
                         <li class="nav-item ml-2">
                             <a href="{{ url_for('account') }}" class="nav-item nav-link">Account</a>
                         </li>

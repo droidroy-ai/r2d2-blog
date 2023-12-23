@@ -1,9 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>Home Page</h1>
     {% for post in posts %}
-        <h2>{{ post.title }}</h2>
-        <p>By {{ post.author }} on {{ post.date }}</p>
+    <article class="media content-section">
+    <div class="media-body">
+        <a href="#">{{ post.author.username }}</a>
+        <small>{{ post.date_posted.strftime('%Y-%m-%d') }}</small>
+ 
+        <h2><a href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></h2>
         <p>{{ post.content }}</p>
+    </div>
+    </article>
     {% endfor %}
 {% endblock content %}
