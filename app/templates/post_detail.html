@@ -25,7 +25,7 @@
     </article>
     <div class="content-section">
         {% for comment in post.comments %}
-        <p class="text-secondary">{{ comment.user.username }} commented:</p>
+        <p class="text-secondary">{{ comment.user.username }} on {{ comment.timestamp.strftime('%Y-%m-%d %H:%M') }} commented:</p>
         <p>{{ comment.body }}</p>
         {% endfor %}
     </div>

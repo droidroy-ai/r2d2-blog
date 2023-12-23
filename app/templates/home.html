@@ -15,8 +15,8 @@
         {% else %}
         <a href="{{ url_for('like_action', post_id=post.id, action='like') }}">Like</a>
         {% endif %}
-        <small>{{ post.likes.count() }} Likes</small>
-        {% endif %}
+     {% endif %}
+     <small>{{ post.likes.count() }} Likes</small>
     <small class="ml-2">{{ post.total_comments() }} Comments</small>
     </article>
     {% endfor %}
