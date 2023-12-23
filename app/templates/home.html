@@ -9,6 +9,12 @@
         <h2><a href="{{ url_for('post', post_id=post.id) }}">{{ post.title }}</a></h2>
         <p>{{ post.content }}</p>
     </div>
+    {% if current_user.has_liked_post(post) %}
+    <a href="{{ url_for('like_action', post_id=post.id, action='unlike') }}">Unlike</a>
+    {% else %}
+    <a href="{{ url_for('like_action', post_id=post.id, action='like') }}">Like</a>
+    {% endif %}
+    <small>{{ post.likes.count() }} Likes</small>
     </article>
     {% endfor %}
 {% endblock content %}
